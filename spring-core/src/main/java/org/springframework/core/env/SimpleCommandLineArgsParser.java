@@ -16,8 +16,6 @@
 
 package org.springframework.core.env;
 
-import org.springframework.util.StringUtils;
-
 /**
  * Parses a {@code String[]} of command line arguments in order to populate a
  * {@link CommandLineArgs} object.
