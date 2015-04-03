@@ -34,14 +34,16 @@ import org.springframework.util.StringUtils;
  * --foo
  * --foo=bar
  * --foo="bar then baz"
- * --foo=bar,baz,biz</pre>
+ * --foo=bar,baz,biz
+ * </pre>
  *
  * <h4>Invalid examples of option arguments</h4>
  * <pre class="code">
  * -foo
  * --foo bar
  * --foo = bar
- * --foo=bar --foo=baz --foo=biz</pre>
+ * --foo=bar --foo=baz --foo=biz
+ * </pre>
  *
  * <h3>Working with non-option arguments</h3>
  * Any and all arguments specified at the command line without the "{@code --}" option
@@ -68,7 +70,7 @@ public class SimpleCommandLineArgsParser {
 			if (arg.startsWith(OPTION_NAME_PREFIX)) {
 				String optionName = parseOptionName(arg);
 				String optionValue = parseOptionValue(arg);
-				if (StringUtils.isEmpty(optionName) || StringUtils.isEmpty(optionValue)) {
+				if (optionName.isEmpty() || (optionValue != null && optionValue.isEmpty())) {
 					throw new IllegalArgumentException("Invalid argument syntax: " + arg);
 				}
 				commandLineArgs.addOptionArg(optionName, optionValue);
@@ -79,20 +81,42 @@ public class SimpleCommandLineArgsParser {
 		return commandLineArgs;
 	}
 
-	public String parseOptionName(String arg) {
-		String optionText = arg.substring(OPTION_NAME_PREFIX.length(), arg.length());
-		if (!optionText.contains(OPTION_VALUE_SEPARATOR)) {
-			return optionText;
-		}
-		return optionText.substring(0, optionText.indexOf(OPTION_VALUE_SEPARATOR));
-	}
+  /**
+   * Parse the given {@code String} command line argument on the rules described {@linkplain
+   * SimpleCommandLineArgsParser above}, returning option name
+   * @param arg command line argument, typically from a {@code main()} method
+   */
+  public String parseOptionName(String arg) {
+    String optionText = parseOptionText(arg);
+    int valueSeparatorIndex = optionText.indexOf(OPTION_VALUE_SEPARATOR);
+    if (valueSeparatorIndex < 0) {
+      return optionText;
+    }
+    return optionText.substring(0, valueSeparatorIndex);
+  }
 
-	public String parseOptionValue(String arg) {
-		if (!arg.contains(OPTION_VALUE_SEPARATOR)) {
-			return null;
-		}
-		String optionText = arg.substring(OPTION_NAME_PREFIX.length(), arg.length());
-		return optionText.substring(optionText.indexOf(OPTION_VALUE_SEPARATOR) + 1, optionText.length());
-	}
+	/**
+	 * Parse the given {@code String} command line argument on the rules described {@linkplain
+	 * SimpleCommandLineArgsParser above}, returning option text in format:
+	 * <pre class="code">optName[=optValue]</pre>
+	 * @param arg command line argument, typically from a {@code main()} method
+	 */
+  private String parseOptionText(String arg) {
+    return arg.substring(OPTION_NAME_PREFIX.length(), arg.length());
+  }
+
+	/**
+	 * Parse the given {@code String} command line argument on the rules described {@linkplain
+	 * SimpleCommandLineArgsParser above}, returning option value
+	 * @param arg command line argument, typically from a {@code main()} method
+	 */
+  public String parseOptionValue(String arg) {
+    String optionText = parseOptionText(arg);
+    int valueSeparatorIndex = optionText.indexOf(OPTION_VALUE_SEPARATOR);
+    if (valueSeparatorIndex < 0) {
+      return null;
+    }
+    return optionText.substring(valueSeparatorIndex + 1, optionText.length());
+  }
 
 }
