@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2011 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 
 package org.springframework.core.env;
-
-import org.springframework.util.StringUtils;
 
 /**
  * Parses a {@code String[]} of command line arguments in order to populate a
@@ -86,14 +84,14 @@ public class SimpleCommandLineArgsParser {
 	 * SimpleCommandLineArgsParser above}, returning option name
 	 * @param arg command line argument, typically from a {@code main()} method
 	 */
-  public String parseOptionName(String arg) {
-    String optionText = parseOptionText(arg);
-    int valueSeparatorIndex = optionText.indexOf(OPTION_VALUE_SEPARATOR);
-    if (valueSeparatorIndex < 0) {
-      return optionText;
-    }
-    return optionText.substring(0, valueSeparatorIndex);
-  }
+	public String parseOptionName(String arg) {
+		String optionText = parseOptionText(arg);
+		int valueSeparatorIndex = optionText.indexOf(OPTION_VALUE_SEPARATOR);
+		if (valueSeparatorIndex < 0) {
+			return optionText;
+		}
+		return optionText.substring(0, valueSeparatorIndex);
+	}
 
 	/**
 	 * Parse the given {@code String} command line argument on the rules described {@linkplain
@@ -101,22 +99,22 @@ public class SimpleCommandLineArgsParser {
 	 * <pre class="code">optName[=optValue]</pre>
 	 * @param arg command line argument, typically from a {@code main()} method
 	 */
-  private String parseOptionText(String arg) {
-    return arg.substring(OPTION_NAME_PREFIX.length(), arg.length());
-  }
+	private String parseOptionText(String arg) {
+		return arg.substring(OPTION_NAME_PREFIX.length(), arg.length());
+	}
 
 	/**
 	 * Parse the given {@code String} command line argument on the rules described {@linkplain
 	 * SimpleCommandLineArgsParser above}, returning option value
 	 * @param arg command line argument, typically from a {@code main()} method
 	 */
-  public String parseOptionValue(String arg) {
-    String optionText = parseOptionText(arg);
-    int valueSeparatorIndex = optionText.indexOf(OPTION_VALUE_SEPARATOR);
-    if (valueSeparatorIndex < 0) {
-      return null;
-    }
-    return optionText.substring(valueSeparatorIndex + 1, optionText.length());
-  }
+	public String parseOptionValue(String arg) {
+		String optionText = parseOptionText(arg);
+		int valueSeparatorIndex = optionText.indexOf(OPTION_VALUE_SEPARATOR);
+		if (valueSeparatorIndex < 0) {
+			return null;
+		}
+		return optionText.substring(valueSeparatorIndex + 1, optionText.length());
+	}
 
 }
