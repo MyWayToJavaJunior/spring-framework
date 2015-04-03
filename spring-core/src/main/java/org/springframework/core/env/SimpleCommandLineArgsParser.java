@@ -81,11 +81,11 @@ public class SimpleCommandLineArgsParser {
 		return commandLineArgs;
 	}
 
-  /**
-   * Parse the given {@code String} command line argument on the rules described {@linkplain
-   * SimpleCommandLineArgsParser above}, returning option name
-   * @param arg command line argument, typically from a {@code main()} method
-   */
+	/**
+	 * Parse the given command line argument on the rules described {@linkplain
+	 * SimpleCommandLineArgsParser above}, returning option name
+	 * @param arg command line argument, typically from a {@code main()} method
+	 */
   public String parseOptionName(String arg) {
     String optionText = parseOptionText(arg);
     int valueSeparatorIndex = optionText.indexOf(OPTION_VALUE_SEPARATOR);
