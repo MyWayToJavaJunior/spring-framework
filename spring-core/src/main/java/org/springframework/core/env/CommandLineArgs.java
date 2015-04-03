@@ -31,7 +31,7 @@ import java.util.Set;
  * @since 3.1
  * @see SimpleCommandLineArgsParser
  */
-class CommandLineArgs {
+public class CommandLineArgs {
 
 	private final Map<String, List<String>> optionArgs = new HashMap<String, List<String>>();
 	private final List<String> nonOptionArgs = new ArrayList<String>();

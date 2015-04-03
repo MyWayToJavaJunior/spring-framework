@@ -16,6 +16,8 @@
 
 package org.springframework.core.env;
 
+import org.springframework.util.StringUtils;
+
 /**
  * Parses a {@code String[]} of command line arguments in order to populate a
  * {@link CommandLineArgs} object.
@@ -49,7 +51,10 @@ package org.springframework.core.env;
  * @author Chris Beams
  * @since 3.1
  */
-class SimpleCommandLineArgsParser {
+public class SimpleCommandLineArgsParser {
+
+	public static String OPTION_NAME_PREFIX = "--";
+	public static String OPTION_VALUE_SEPARATOR = "=";
 
 	/**
 	 * Parse the given {@code String} array based on the rules described {@linkplain
@@ -60,27 +65,34 @@ class SimpleCommandLineArgsParser {
 	public CommandLineArgs parse(String... args) {
 		CommandLineArgs commandLineArgs = new CommandLineArgs();
 		for (String arg : args) {
-			if (arg.startsWith("--")) {
-				String optionText = arg.substring(2, arg.length());
-				String optionName;
-				String optionValue = null;
-				if (optionText.contains("=")) {
-					optionName = optionText.substring(0, optionText.indexOf("="));
-					optionValue = optionText.substring(optionText.indexOf("=")+1, optionText.length());
-				}
-				else {
-					optionName = optionText;
-				}
-				if (optionName.isEmpty() || (optionValue != null && optionValue.isEmpty())) {
+			if (arg.startsWith(OPTION_NAME_PREFIX)) {
+				String optionName = parseOptionName(arg);
+				String optionValue = parseOptionValue(arg);
+				if (StringUtils.isEmpty(optionName) || StringUtils.isEmpty(optionValue)) {
 					throw new IllegalArgumentException("Invalid argument syntax: " + arg);
 				}
 				commandLineArgs.addOptionArg(optionName, optionValue);
-			}
-			else {
+			} else {
 				commandLineArgs.addNonOptionArg(arg);
 			}
 		}
 		return commandLineArgs;
+	}
+
+	public String parseOptionName(String arg) {
+		String optionText = arg.substring(OPTION_NAME_PREFIX.length(), arg.length());
+		if (!optionText.contains(OPTION_VALUE_SEPARATOR)) {
+			return optionText;
+		}
+		return optionText.substring(0, optionText.indexOf(OPTION_VALUE_SEPARATOR));
+	}
+
+	public String parseOptionValue(String arg) {
+		if (!arg.contains(OPTION_VALUE_SEPARATOR)) {
+			return null;
+		}
+		String optionText = arg.substring(OPTION_NAME_PREFIX.length(), arg.length());
+		return optionText.substring(optionText.indexOf(OPTION_VALUE_SEPARATOR) + 1, optionText.length());
 	}
 
 }
